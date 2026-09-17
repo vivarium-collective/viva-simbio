@@ -225,8 +225,7 @@ class SimbioProcess(Process):
             if param is not None:
                 values[param] = float(value)
 
-        result = self._simulator.solve(
-            values=values,
+        result = self._simulator.with_values(values).solve(
             t_span=(0.0, float(interval)),
             save_at=[0.0, float(interval)],
         )
@@ -368,8 +367,8 @@ class SimbioUTCStep(BaseSimbioStep):
         values = self._override_values(incoming)
 
         save_at = np.linspace(0.0, float(self.config["time"]), n_points)
-        result = self._simulator.solve(
-            values=values, save_at=save_at, solver=self._solver()
+        result = self._simulator.with_values(values).with_solver(self._solver()).solve(
+            save_at=save_at
         )
 
         # Only species simbio actually integrated appear in the result. SBML
@@ -425,9 +424,8 @@ class SimbioSteadyStateStep(BaseSimbioStep):
         values = self._override_values(incoming)
 
         t_end = float(self.config["equilibration_time"])
-        result = self._simulator.solve(
-            values=values, t_span=(0.0, t_end), save_at=[0.0, t_end],
-            solver=self._solver(),
+        result = self._simulator.with_values(values).with_solver(self._solver()).solve(
+            t_span=(0.0, t_end), save_at=[0.0, t_end],
         )
         steady = {
             sid: float(np.asarray(result[sid])[-1])
@@ -517,9 +515,8 @@ class SimbioUTCProcess(Process):
                     self._state[sid] = float(value)
 
         values = {getattr(self._model, sid): self._state[sid] for sid in self._species_ids}
-        result = self._simulator.solve(
-            values=values, t_span=(0.0, float(interval)), save_at=[0.0, float(interval)],
-            solver=self._solver(),
+        result = self._simulator.with_values(values).with_solver(self._solver()).solve(
+            t_span=(0.0, float(interval)), save_at=[0.0, float(interval)],
         )
         self._state = {
             sid: (float(np.asarray(result[sid])[-1]) if sid in result
