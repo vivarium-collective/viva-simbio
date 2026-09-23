@@ -9,7 +9,7 @@ would reduce to 0/0 at build time if locals were inlined as float literals.
 import numpy as np
 import pytest
 
-from pbg_simbio.antimony_loader import model_from_antimony
+from viva_simbio.antimony_loader import model_from_antimony
 
 
 def _solve(model):
@@ -104,7 +104,7 @@ _SBML_AMOUNT_NONUNIT_VOL = f"""<?xml version="1.0" encoding="UTF-8"?>
 
 def test_initial_amount_converted_to_concentration_by_volume():
     """A's reported initial value is amount/volume, not the raw amount."""
-    from pbg_simbio.antimony_loader import model_from_sbml
+    from viva_simbio.antimony_loader import model_from_sbml
     from simbio import Simulator
 
     model, species, _ = model_from_sbml(_SBML_AMOUNT_NONUNIT_VOL)
@@ -117,7 +117,7 @@ def test_initial_amount_converted_to_concentration_by_volume():
 def test_extensive_rate_law_decays_independent_of_volume():
     """dConc/dt = -k*[A]: the comp factor cancels, so A decays at rate k
     regardless of compartment volume (it did NOT before the fix)."""
-    from pbg_simbio.antimony_loader import model_from_sbml
+    from viva_simbio.antimony_loader import model_from_sbml
     from simbio import Simulator
 
     model, _species, _ = model_from_sbml(_SBML_AMOUNT_NONUNIT_VOL)

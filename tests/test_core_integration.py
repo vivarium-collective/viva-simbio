@@ -1,16 +1,16 @@
 """Guard: build_core() must register this workspace's own processes.
 
-These processes live INSIDE the editable-installed ``pbg_simbio`` package, which
+These processes live INSIDE the editable-installed ``viva_simbio`` package, which
 ``process_bigraph.allocate_core()`` does not auto-discover (an editable install
 is invisible to ``importlib.metadata.packages_distributions()``). If the explicit
-registration in ``pbg_simbio.core`` is ever dropped, every composite that
+registration in ``viva_simbio.core`` is ever dropped, every composite that
 addresses ``local:SimbioProcess`` breaks deep inside Composite construction with
 a cryptic ``no link found at address`` error. This test makes that regression
 fail fast with a clear message instead.
 """
 
-from pbg_simbio import build_core
-from pbg_simbio.core import SIMBIO_PROCESSES
+from viva_simbio import build_core
+from viva_simbio.core import SIMBIO_PROCESSES
 
 
 def test_build_core_succeeds():

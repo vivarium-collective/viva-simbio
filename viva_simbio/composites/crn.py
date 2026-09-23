@@ -1,7 +1,7 @@
 """Composite generators for simbio Chemical Reaction Networks.
 
 The headline models are defined as **Antimony** strings and loaded into genuine
-simbio models (see :mod:`pbg_simbio.antimony_loader`). Each generator wires a
+simbio models (see :mod:`viva_simbio.antimony_loader`). Each generator wires a
 :class:`SimbioProcess` to a shared ``concentrations`` store **and** a
 ``parameters`` store (so a sibling can perturb rate constants), plus a RAM
 emitter — so the dashboard's Composites tab can run and sweep them.

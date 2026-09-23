@@ -110,7 +110,7 @@ class SimbioProcess(Process):
 
     * **Antimony** — set ``config["antimony"]`` to an Antimony model string. It
       is compiled to SBML (libantimony), extracted (libSBML), and rebuilt with
-      simbio's core (see :mod:`pbg_simbio.antimony_loader`). Arbitrary rate
+      simbio's core (see :mod:`viva_simbio.antimony_loader`). Arbitrary rate
       laws (mass-action, Hill, ...) are supported.
     * **Reaction spec** — set ``config["species"]`` + ``config["reactions"]``
       for a mass-action network built directly via :func:`build_crn_model`.

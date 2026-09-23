@@ -1,4 +1,4 @@
-"""Generate a self-contained HTML demo report for pbg-simbio.
+"""Generate a self-contained HTML demo report for viva-simbio.
 
 Runs three simbio CRN configurations through process-bigraph composites,
 collects time-series snapshots, and renders an interactive report with Plotly
@@ -15,7 +15,7 @@ import time
 
 from process_bigraph import Composite, allocate_core, gather_emitter_results
 
-from pbg_simbio.composites.crn import brusselator, lotka_volterra, repressilator
+from viva_simbio.composites.crn import brusselator, lotka_volterra, repressilator
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUTPUT = os.path.join(HERE, "report.html")
@@ -215,7 +215,7 @@ def cfg_doc_view(doc):
 TEMPLATE = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>pbg-simbio demo report</title>
+<title>viva-simbio demo report</title>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
   body {{ font-family:-apple-system,Segoe UI,Roboto,sans-serif; margin:0;
@@ -248,7 +248,7 @@ TEMPLATE = """<!doctype html>
 </style></head>
 <body>
 <header>
-  <h1>pbg-simbio</h1>
+  <h1>viva-simbio</h1>
   <p>process-bigraph wrapper for the <b>simbio</b> Chemical Reaction Network simulator — real bridge to simbio's LSODA solver.</p>
 </header>
 <nav>{nav}</nav>

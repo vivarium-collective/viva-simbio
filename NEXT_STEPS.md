@@ -74,7 +74,7 @@ Empty Discovered view usually means the venv isn't built (`uv pip install -e ".[
 
 ## 3 — Composites
 
-Composite documents — process-bigraph state trees — live here. Pick one, inspect its wiring (process tree, store paths, emitters), and run it from the **Composite Explorer** sub-page to confirm it produces sensible output before wiring it into an investigation. Composites you write directly into `pbg_simbio/composites/` show up automatically.
+Composite documents — process-bigraph state trees — live here. Pick one, inspect its wiring (process tree, store paths, emitters), and run it from the **Composite Explorer** sub-page to confirm it produces sensible output before wiring it into an investigation. Composites you write directly into `viva_simbio/composites/` show up automatically.
 
 ## 4 — Studies and Investigations
 
@@ -101,7 +101,7 @@ compare.
 Charts rendered from observable trajectories. Two creation paths:
 
 - **Configure a registered class** — pick from the Visualization classes discovered in the Registry (subclasses of `pbg_superpowers.visualization.Visualization` in any installed pbg-* package), give it settings.
-- **Generate from natural language** — describe what you want; the dashboard writes a request file and prompts you to run `/pbg-viz <name>`, which scaffolds a new Visualization function into `pbg_simbio/visualizations/` and commits it on a stage branch.
+- **Generate from natural language** — describe what you want; the dashboard writes a request file and prompts you to run `/pbg-viz <name>`, which scaffolds a new Visualization function into `viva_simbio/visualizations/` and commits it on a stage branch.
 
 ## 6 — GitHub Branches
 

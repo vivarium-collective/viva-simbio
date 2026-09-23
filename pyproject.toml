@@ -3,7 +3,7 @@ requires = ["hatchling>=1.18"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pbg-simbio"
+name = "viva-simbio"
 version = "0.1.0"
 description = "Process-bigraph wrapper for simbio (Chemical Reaction Network simulation)"
 readme = "README.md"
@@ -32,7 +32,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest", "matplotlib", "plotly", "bigraph-viz"]
 # Workspace dashboard stack (the `vivarium-workbench serve` CLI + report deps).
-# Not needed to use the wrapper; install with `pip install pbg-simbio[dashboard]`.
+# Not needed to use the wrapper; install with `pip install viva-simbio[dashboard]`.
 dashboard = [
     "vivarium-workbench",
     "bigraph-viz>=2.0.3",
@@ -45,11 +45,11 @@ dashboard = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/vivarium-collective/pbg-simbio"
-Issues = "https://github.com/vivarium-collective/pbg-simbio/issues"
+Homepage = "https://github.com/vivarium-collective/viva-simbio"
+Issues = "https://github.com/vivarium-collective/viva-simbio/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["pbg_simbio"]
+packages = ["viva_simbio"]
 
 [tool.uv.sources]
 # Neither is on PyPI; resolve from git so clean installs and Docker builds work

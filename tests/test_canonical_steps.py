@@ -5,7 +5,7 @@ import textwrap
 import pytest
 from process_bigraph import allocate_core
 
-from pbg_simbio import (
+from viva_simbio import (
     SimbioSteadyStateStep,
     SimbioUTCProcess,
     SimbioUTCStep,
