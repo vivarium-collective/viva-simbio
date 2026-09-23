@@ -6,7 +6,7 @@ distributions* that depend on bigraph-schema (it scans
 ``pbg-*`` wrapper packages installed as regular wheels, but it does **not** see
 this workspace's own package when it is installed *editable* (``pip install -e``):
 an editable install records only a ``.pth`` shim in its ``RECORD``, so
-``packages_distributions()`` never maps ``pbg_simbio`` back to the ``pbg-simbio``
+``packages_distributions()`` never maps ``viva_simbio`` back to the ``viva-simbio``
 distribution and the discovery scan skips it entirely. The result is that
 ``SimbioProcess`` is missing from the core's link registry and any composite that
 references ``local:SimbioProcess`` fails with::
@@ -16,7 +16,7 @@ references ``local:SimbioProcess`` fails with::
 So we register this workspace's *own* processes explicitly here. The
 registrations are idempotent (skipped if discovery already provided them, e.g.
 in a non-editable / Docker install), so ``build_core()`` is correct regardless
-of how ``pbg-simbio`` was installed.
+of how ``viva-simbio`` was installed.
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ SIMBIO_PROCESSES = {
 
 
 def register_simbio_processes(core):
-    """Register pbg-simbio's own process/step wrappers into a core.
+    """Register viva-simbio's own process/step wrappers into a core.
 
     Idempotent: a wrapper already present (e.g. provided by auto-discovery in a
     non-editable install) is left untouched.
@@ -56,7 +56,7 @@ def register_simbio_processes(core):
 
 
 def build_core(core=None):
-    """Return a process-bigraph core with all pbg-simbio types + processes registered.
+    """Return a process-bigraph core with all viva-simbio types + processes registered.
 
     This is the canonical core for the workspace: composites that address
     ``local:SimbioProcess`` (and the test suite) must build their `Composite`

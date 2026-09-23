@@ -1,4 +1,4 @@
-# pbg-simbio
+# viva-simbio
 
 A [process-bigraph](https://github.com/vivarium-collective/process-bigraph)
 wrapper for [**simbio**](https://github.com/dyscolab/simbio), a Python package
@@ -33,7 +33,7 @@ module, a controller modulating rate constants) composes naturally with it.
 > (a removed `symbolite.core.as_function`, an `add_species` that builds a bare
 > `Variable` instead of a `Species`, a `Species(var, stoich)` call that assumes
 > the old `Reactant` signature, and a `MathMLSymbol` that fails poincare's unit
-> translation). Rather than vendor a fork of it, `pbg-simbio` keeps the bridge
+> translation). Rather than vendor a fork of it, `viva-simbio` keeps the bridge
 > **fully real** without touching that importer: the model is parsed by
 > **libantimony** (real), the network is extracted with **libSBML** (real), and
 > the model is rebuilt with simbio's own working core (`Species`, `Parameter`,
@@ -45,9 +45,9 @@ module, a controller modulating rate constants) composes naturally with it.
 
 ```bash
 # From PyPI (once published):
-pip install pbg-simbio
+pip install viva-simbio
 # or with uv:
-uv pip install pbg-simbio
+uv pip install viva-simbio
 
 # For development (editable):
 uv venv --python 3.12 .venv && source .venv/bin/activate
@@ -63,7 +63,7 @@ simbio requires Python ≥ 3.12.
 
 ```python
 from process_bigraph import Composite, allocate_core, gather_emitter_results
-from pbg_simbio.composites.crn import brusselator
+from viva_simbio.composites.crn import brusselator
 
 core = allocate_core()
 doc = brusselator(k2=3.0, interval=0.25)   # a chemical oscillator
@@ -77,7 +77,7 @@ print(results[("emitter",)][-1])   # final concentrations + time
 Or drive the process directly with your own Antimony model:
 
 ```python
-from pbg_simbio import SimbioProcess
+from viva_simbio import SimbioProcess
 
 proc = SimbioProcess(config={"antimony": """
 model my_oscillator
@@ -155,7 +155,7 @@ shared store "concentrations" (map[string,float], absolute)
 
 simbio concept → PBG mapping:
 
-| simbio | pbg-simbio |
+| simbio | viva-simbio |
 |---|---|
 | Antimony / SBML model | parsed by libantimony + libSBML, rebuilt with simbio core |
 | `Compartment` / `Species` / `Parameter` / `RateLaw` | built from the parsed network |

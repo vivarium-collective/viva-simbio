@@ -1,4 +1,4 @@
-"""Custom bigraph-schema types for pbg-simbio.
+"""Custom bigraph-schema types for viva-simbio.
 
 `numeric_result` is the canonical trajectory shape shared with pbg-copasi /
 pbg-tellurium and the pbg-biomodels comparison flow:
@@ -6,7 +6,7 @@ pbg-tellurium and the pbg-biomodels comparison flow:
     {"time": list[float], "columns": list[string], "values": list[list[float]]}
 
 It is registered defensively (skipped if a host workspace, e.g. pbg-biomodels,
-has already registered it) so importing pbg-simbio into another workspace does
+has already registered it) so importing viva-simbio into another workspace does
 not clash.
 """
 
@@ -21,7 +21,7 @@ SIMBIO_TYPES = {
 
 
 def register_simbio_types(core):
-    """Register pbg-simbio bigraph-schema types into a process-bigraph core."""
+    """Register viva-simbio bigraph-schema types into a process-bigraph core."""
     try:
         existing = set(core.types())
     except Exception:

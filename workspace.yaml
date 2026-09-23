@@ -2,7 +2,7 @@ schema_version: 2
 name: simbio
 created: "2026-05-20"
 plugin_version: 0.8.1
-package_path: pbg_simbio
+package_path: viva_simbio
 
 # The four arrays below start empty; the dashboard populates them as you
 # work. Hand-editing is fine for small adds, but the dashboard's writers

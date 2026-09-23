@@ -1,4 +1,4 @@
-"""pbg-simbio: process-bigraph wrapper for the simbio CRN simulator."""
+"""viva-simbio: process-bigraph wrapper for the simbio CRN simulator."""
 
 from .antimony_loader import load_model_source, model_from_antimony, model_from_sbml
 from .composites import brusselator, lotka_volterra, repressilator

@@ -1,4 +1,4 @@
-# Contributing to pbg-simbio
+# Contributing to viva-simbio
 
 ## Development setup
 

@@ -3,8 +3,8 @@
 import numpy as np
 from process_bigraph import Composite, gather_emitter_results
 
-from pbg_simbio import build_core
-from pbg_simbio.composites.crn import brusselator, lotka_volterra, repressilator
+from viva_simbio import build_core
+from viva_simbio.composites.crn import brusselator, lotka_volterra, repressilator
 
 GENERATORS = ["simbio_brusselator", "simbio_lotka_volterra", "simbio_repressilator"]
 
