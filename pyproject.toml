@@ -53,18 +53,18 @@ packages = ["viva_simbio"]
 
 [tool.uv.sources]
 # Neither is on PyPI; resolve from git so clean installs and Docker builds work
-# (no local-path assumptions). pbg-superpowers is required by the composite
+# (no local-path assumptions). viva-superpowers is required by the composite
 # generators; vivarium-workbench is only needed for the optional `dashboard` extra.
 viva-superpowers = { git = "https://github.com/vivarium-collective/viva-superpowers.git", branch = "main" }
 vivarium-workbench = { git = "https://github.com/vivarium-collective/vivarium-workbench.git", branch = "main" }
 
 [tool.uv]
-# pbg-superpowers 0.14+ and vivarium-workbench both depend on the (PyPI-absent)
-# pbg-basic-processes but pin it differently — pbg-superpowers via a
+# viva-superpowers 0.14+ and vivarium-workbench both depend on the (PyPI-absent)
+# viva-basic-processes but pin it differently — viva-superpowers via a
 # `[tool.uv.sources]` `branch = "main"`, vivarium-workbench via a PEP 508 direct
 # reference `... @ git+...@main`. uv treats those two forms as conflicting URLs
 # and fails to resolve the `dashboard` extra. A single override collapses every
 # declaration to one spec so the graph resolves and the Docker wheel build runs.
 override-dependencies = [
-    "pbg-basic-processes @ git+https://github.com/vivarium-collective/pbg-basic-processes.git@main",
+    "viva-basic-processes @ git+https://github.com/vivarium-collective/viva-basic-processes.git@main",
 ]
