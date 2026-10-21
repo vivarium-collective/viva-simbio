@@ -55,6 +55,8 @@ def model_from_sbml(sbml: str, name: str = "model"):
     import libsbml
     from poincare.reactions import Reactant, RateLaw
     from simbio import Compartment, Parameter, Volume, assign
+    from simbio import initial as initial_field  # aliased: `initial` is reused as
+    # a local float in the species loop below (amount/concentration value).
     from simbio.core import amount, concentration, volume as volume_field
 
     document = libsbml.readSBMLFromString(sbml)
@@ -78,6 +80,21 @@ def model_from_sbml(sbml: str, name: str = "model"):
         if rule.isAssignment()
     }
     assignment_vars = set(assignment_rules)
+
+    # Rate rules define an explicit ODE dX/dt = f(...) for a species, parameter,
+    # or compartment. These are the model's dynamics for many BioModels (species
+    # declared boundaryCondition=true whose change is given entirely by a
+    # rateRule, e.g. BIOMD0000000006 / Goldbeter 1991). The target must become an
+    # INTEGRATED state variable driven by this derivative — not a fixed constant
+    # and not a reaction. Without handling these, such models emit flat constants
+    # (or the integrator fails on "no dynamics"). Resolved below, after
+    # assignment rules are inlined so RHS references resolve.
+    rate_rules = {
+        rule.getVariable(): rule.getMath()
+        for rule in model.getListOfRules()
+        if rule.isRate()
+    }
+    rate_rule_vars = set(rate_rules)
 
     namespace: dict[str, Any] = {"__annotations__": {}}
     volume = next(iter(compartment_size.values()), 1.0)
@@ -128,7 +145,11 @@ def model_from_sbml(sbml: str, name: str = "model"):
         species_objs[sid] = obj
         eval_names[sid] = obj
         species_names.append(sid)
-        if s.getBoundaryCondition() or s.getConstant():
+        # Boundary/constant species, and any species governed by a rate rule,
+        # are not consumed by reactions (SBML: a rate-rule species' change is
+        # given entirely by its rule). Rate-rule species still get an explicit
+        # derivative equation below — they must not be left as free constants.
+        if s.getBoundaryCondition() or s.getConstant() or sid in rate_rule_vars:
             fixed_species.add(sid)
 
     parameter_names: list[str] = []
@@ -137,9 +158,17 @@ def model_from_sbml(sbml: str, name: str = "model"):
         if pid in assignment_vars:
             continue  # derived; inlined below
         value = p.getValue() if p.isSetValue() else 0.0
-        param = assign(default=float(value))
-        namespace[pid] = param
-        namespace["__annotations__"][pid] = Parameter
+        if pid in rate_rule_vars:
+            # A parameter driven by a rate rule is a state variable, not a
+            # constant: build it with `initial(...)` so it is integrable and
+            # attach its derivative equation below.
+            param = initial_field(default=float(value))
+            namespace[pid] = param
+            namespace["__annotations__"][pid] = type(param)
+        else:
+            param = assign(default=float(value))
+            namespace[pid] = param
+            namespace["__annotations__"][pid] = Parameter
         eval_names[pid] = param
         parameter_names.append(pid)
 
@@ -166,6 +195,29 @@ def model_from_sbml(sbml: str, name: str = "model"):
             for var in pending:
                 eval_names.setdefault(var, 0.0)
             break
+
+    # Attach explicit ODEs for rate-rule targets. The RHS is resolved in the
+    # same scope used for kinetic laws (species Variables, parameters, inlined
+    # assignment-rule expressions, and compartment sizes) — crucially AFTER the
+    # assignment rules above are inlined into eval_names, so references resolve.
+    # A rate rule gives the derivative directly in the target's own units
+    # (concentration or amount), so — unlike a reaction kinetic law — NO
+    # volume division is applied here.
+    for var, math_node in rate_rules.items():
+        target = eval_names.get(var)
+        if not hasattr(target, "derive"):
+            # Not yet an integrable Variable (e.g. a compartment tracked as a
+            # float size). Promote it to a state Variable so it can be driven.
+            if isinstance(target, (int, float)):
+                default = float(target)
+            else:
+                default = float(compartment_size.get(var, 0.0))
+            target = initial_field(default=default)
+            namespace[var] = target
+            namespace["__annotations__"][var] = type(target)
+            eval_names[var] = target
+        rhs = _eval_rate_law(libsbml.formulaToL3String(math_node), eval_names)
+        namespace[f"_rate_{var}"] = target.derive() << rhs
 
     for r in model.getListOfReactions():
         kinetic = r.getKineticLaw()

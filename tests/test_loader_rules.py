@@ -129,3 +129,102 @@ def test_extensive_rate_law_decays_independent_of_volume():
     rng = expected.max() - expected.min()
     nrmse = float(np.sqrt(np.mean((a - expected) ** 2)) / rng)
     assert nrmse < 1e-3
+
+
+# --- Rate rules (explicit ODEs dX/dt = f) --------------------------------
+#
+# Many BioModels express their dynamics via `rateRule`s on species declared
+# boundaryCondition=true (and sometimes on parameters) rather than reactions
+# (e.g. BIOMD0000000006 / Goldbeter 1991: u' = ..., v' = ...). Before the fix
+# the loader ignored rateRules entirely, so those targets were left as fixed
+# constants and the model emitted no dynamics (empty/flat output). These tests
+# assert a rateRule target is INTEGRATED — it varies over time and is finite.
+
+
+def test_rate_rule_species_is_dynamic():
+    """A boundary species governed only by a rate rule must be integrated,
+    not left as a flat constant. `X' = a - X` relaxes from 0 toward a=2."""
+    ant = """model m
+      species $X = 0;
+      a = 2;
+      X' = a - X;
+    end"""
+    model, species, _params = model_from_antimony(ant)
+    assert species == ["X"]
+    import simbio
+
+    t = np.linspace(0, 5, 11)
+    res = simbio.Simulator(model).solve(save_at=t)
+    x = np.asarray(res["X"])
+    assert not np.any(np.isnan(x))  # finite, integrator did not fail
+    assert x.max() - x.min() > 1e-3  # actually varies, not a flat constant
+    # Analytic: X(t) = a*(1 - e^{-t}); check the approach to the a=2 asymptote.
+    assert x[-1] == pytest.approx(2.0 * (1 - np.exp(-5.0)), rel=1e-2)
+
+
+def test_rate_rule_species_not_consumed_by_reaction():
+    """A rate-rule species is driven ONLY by its rule; a reaction referencing
+    it does not additionally change it (SBML rate-rule semantics)."""
+    # X has a rate rule (X' = 1, so X == t), and also appears as a reactant in
+    # a reaction producing P. X must follow its rule (reach ~5 at t=5), and P
+    # must still be produced from X's trajectory.
+    ant = """model m
+      species $X = 0, P = 0;
+      X' = 1;
+      kf = 0.3;
+      r: X -> P; kf * X;
+    end"""
+    model, _species, _ = model_from_antimony(ant)
+    import simbio
+
+    res = simbio.Simulator(model).solve(save_at=np.linspace(0, 5, 51))
+    x = np.asarray(res["X"])
+    p = np.asarray(res["P"])
+    assert x[-1] == pytest.approx(5.0, rel=1e-3)  # X == t, unaffected by reaction
+    assert p[-1] > 0.0  # P still produced from X
+
+
+def test_rate_rule_parameter_becomes_integrated_state():
+    """A parameter that is a rate-rule target must become an integrable state
+    variable (via `initial`), not a fixed constant. `p' = 2` from p0=1."""
+    ant = """model m
+      species $X = 0;
+      p = 1;
+      p' = 2;
+      X' = p;
+    end"""
+    model, species, params = model_from_antimony(ant)
+    assert "p" in params
+    import simbio
+
+    t = np.linspace(0, 3, 4)
+    res = simbio.Simulator(model).solve(save_at=t)
+    p = np.asarray(res["p"])
+    x = np.asarray(res["X"])
+    assert not np.any(np.isnan(p))
+    # p(t) = 1 + 2t -> [1, 3, 5, 7]
+    assert np.allclose(p, 1.0 + 2.0 * t, rtol=1e-4)
+    # X(t) = integral of p = t + t^2 -> driven by the evolving parameter
+    assert np.allclose(x, t + t**2, atol=1e-3)
+
+
+def test_rate_rule_coupled_with_assignment_rule():
+    """Rate rules whose RHS references an assignment-rule variable must resolve
+    (assignment rules are inlined before rate-rule RHS is built). Mirrors the
+    BIOMD6 shape: y := a + b (assignment), x' = y (rate)."""
+    ant = """model m
+      species $x = 0;
+      a = 1; b = 2;
+      y := a + b;
+      x' = y;
+    end"""
+    model, species, _ = model_from_antimony(ant)
+    assert "y" not in species  # assignment var, inlined not integrated
+    import simbio
+
+    t = np.linspace(0, 4, 9)
+    res = simbio.Simulator(model).solve(save_at=t)
+    x = np.asarray(res["x"])
+    assert not np.any(np.isnan(x))
+    # y == 3 constant, so x' = 3 -> x == 3t
+    assert np.allclose(x, 3.0 * t, atol=1e-3)
