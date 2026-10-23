@@ -1,12 +1,13 @@
-name: Publish read-only dashboard
+name: Publish read-only workbench
 
 # Build this workspace into a self-contained static SPA and publish it to the
-# gh-pages branch at dashboard/ (served at
-# https://vivarium-collective.github.io/viva-simbio/dashboard/). A read-only mirror of every
+# gh-pages branch at workbench/ (served at
+# https://vivarium-collective.github.io/viva-simbio/workbench/). A read-only mirror of every
 # investigation + study on main, browsable with no server.
+# (A legacy /dashboard/ path is kept as a redirect to /workbench/.)
 #
 # Scaffolded by `vivarium-workbench add-dashboard`. DEPLOY job (post-merge), not
-# a PR gate; it only ever writes dashboard/ on gh-pages.
+# a PR gate; it writes workbench/ (+ a dashboard/ redirect) on gh-pages.
 
 on:
   push:
@@ -57,15 +58,15 @@ jobs:
           uv pip install "vivarium-workbench @ git+https://github.com/vivarium-collective/vivarium-workbench.git@main"
           uv pip install -e . --no-deps || echo "workspace has no installable build; composites render from spec only"
 
-      - name: Build dashboard snapshot
+      - name: Build read-only workbench snapshot
         run: |
           source .venv/bin/activate
-          bash scripts/publish_dashboard.sh reports/published/dashboard
+          bash scripts/publish_dashboard.sh reports/published/workbench
 
       - name: Publish to gh-pages (create the branch if absent)
         run: |
           set -euo pipefail
-          if [ ! -f reports/published/dashboard/index.html ]; then
+          if [ ! -f reports/published/workbench/index.html ]; then
             echo "::error::build produced no bundle (no index.html); nothing to publish"
             exit 1
           fi
@@ -81,13 +82,25 @@ jobs:
             git rm -rf . >/dev/null 2>&1 || true
             touch .nojekyll
           fi
+          rm -rf workbench && mkdir -p workbench
+          cp -R "$GITHUB_WORKSPACE/reports/published/workbench/." workbench/
+          # Legacy /dashboard/ path → redirect to /workbench/ so old links
+          # (README showcase, external bookmarks) keep resolving.
           rm -rf dashboard && mkdir -p dashboard
-          cp -R "$GITHUB_WORKSPACE/reports/published/dashboard/." dashboard/
+          cat > dashboard/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>viva-simbio</title>
+          <meta http-equiv="refresh" content="0; url=../workbench/">
+          <link rel="canonical" href="../workbench/">
+          <script>location.replace('../workbench/' + location.search + location.hash)</script>
+          <a href="../workbench/">viva-simbio read-only workbench →</a>
+          HTML
           git add -A
           if git diff --cached --quiet; then
-            echo "dashboard snapshot unchanged; skipping commit"
+            echo "read-only workbench snapshot unchanged; skipping commit"
           else
-            git commit -m "gh-pages: republish read-only dashboard (automated, ${GITHUB_SHA::7})"
+            git commit -m "gh-pages: republish read-only workbench (automated, ${GITHUB_SHA::7})"
             git push origin gh-pages
-            echo "published read-only dashboard to gh-pages:dashboard/"
+            echo "published read-only workbench to gh-pages:workbench/ (+ dashboard/ redirect)"
           fi
