@@ -832,26 +832,12 @@ a.viv-bs-commit:hover { text-decoration: underline; }
 <div class="viv-layout">
 
   <!-- LEFT RAIL -->
-  <aside id="viv-rail" class="viv-rail">
+  <aside id="viv-rail" class="viv-rail viv-rail-collapsed">
 
-    <!-- Brand: fixed Vivarium logo + name (no per-workspace icon/name override). -->
-    <div class="viv-rail-header">
-      <a class="viv-rail-brand-link" href="#about" title="About Vivarium Workbench"
-         onclick="window.location.hash='#about'; if(window._switchPage){_switchPage('about');}">
-        <img class="viv-rail-logo" src="assets/vivarium-logo.png" alt="Vivarium" loading="lazy"
-             data-light-src="assets/vivarium-logo.png"
-             data-dark-src="assets/vivarium-logo-dark.png"
-             onerror="if(this.dataset.lightSrc&&this.src.indexOf('logo-dark')>=0){this.src=this.dataset.lightSrc;}">
-        <div class="viv-rail-brand">
-          <strong>Vivarium</strong>
-          <small>workbench</small>
-        </div>
-      </a>
-      <!-- Global search moved to a "Search" nav tab above Resources (see below);
-           ⌘K still opens search. The collapse/expand TOGGLE button was removed —
-           drag the rail's right edge to widen it, or drag it narrow to collapse
-           to the icon bar (see the resize handle below). -->
-    </div>
+    <!-- The Vivarium brand logo was removed; the workspace badge (avatar) is now
+         the top element of the rail. The rail stays permanently collapsed (a fixed
+         icon bar) — there is no expand/resize. "About Vivarium" is reached from the
+         About button pinned in the rail footer. ⌘K still opens search. -->
 
     
     <!-- GitHub mark, defined once and reused (workspace-name link + collapsed icon). -->
@@ -979,25 +965,6 @@ a.viv-bs-commit:hover { text-decoration: underline; }
         </span>
         <span class="viv-rail-link-label">Investigations</span>
       </a>
-      <!-- Studies: toggles the dockable Studies panel — the per-investigation study
-           browser (search / select / reorder), relocated out of the rail into a
-           panel that docks left / right / bottom / top (studies-panel.js, built on
-           panel-dock.js like the Chat / Code / Graph panels). NOT a .menu-link, so
-           page switches leave its open state alone. Opens by default when the
-           workspace has any studies. List-with-bullets icon. -->
-      <a href="#" id="viv-studies-toggle" class="viv-rail-link" role="button" aria-pressed="false" title="Studies browser">
-        <span class="viv-rail-link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="viv-rail-link-svg">
-            <circle cx="4.5" cy="6"  r="1.2" fill="currentColor" stroke="none"/>
-            <path d="M9 6 H20"/>
-            <circle cx="4.5" cy="12" r="1.2" fill="currentColor" stroke="none"/>
-            <path d="M9 12 H20"/>
-            <circle cx="4.5" cy="18" r="1.2" fill="currentColor" stroke="none"/>
-            <path d="M9 18 H20"/>
-          </svg>
-        </span>
-        <span class="viv-rail-link-label">Studies</span>
-      </a>
       <!-- Resources: the workspace's source material. A single tab with two
            sub-tabs — "Datasets & references" (the /api/inputs datasets,
            references and expert docs) and "Scientific resources" (the curated
@@ -1046,7 +1013,7 @@ a.viv-bs-commit:hover { text-decoration: underline; }
             <path d="M20 9.5 L22.5 12 L20 14.5"/>
           </svg>
         </span>
-        <span class="viv-rail-link-label">Registry</span>
+        <span class="viv-rail-link-label">Process</span>
       </a>
       <a href="#simulations"       class="viv-rail-link menu-link" data-page="simulations">
         <span class="viv-rail-link-icon">
@@ -1080,37 +1047,10 @@ a.viv-bs-commit:hover { text-decoration: underline; }
         </span>
         <span class="viv-rail-link-label">Explore</span>
       </a>
-      <!-- AI: toggles the docked chat panel on the right (docs/ai-chat.md). Not a page,
-           and deliberately NOT a .menu-link (so page switches don't clear its state).
-           Live-only — hidden in the read-only snapshot (snapshot-readonly.css). -->
-      <a href="#" id="viv-ai-toggle" class="viv-rail-link" role="button" aria-pressed="false" title="Chat">
-        <span class="viv-rail-link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="viv-rail-link-svg">
-            <rect x="5" y="8" width="14" height="10" rx="2.5"/>
-            <path d="M12 4.5 V8"/>
-            <circle cx="12" cy="3.6" r="0.9"/>
-            <circle cx="9.5" cy="13" r="1" fill="currentColor" stroke="none"/>
-            <circle cx="14.5" cy="13" r="1" fill="currentColor" stroke="none"/>
-            <path d="M3 12 V15 M21 12 V15"/>
-          </svg>
-        </span>
-        <span class="viv-rail-link-label">Chat</span>
-      </a>
-      <!-- Code: toggles the process-code panel (dockable left/right/bottom like the chat,
-           via panel-dock.js). Like VivaChat, NOT a .menu-link (page switches leave its
-           state alone) and live-only (hidden in the read-only snapshot). -->
-      <a href="#" id="viv-code-toggle" class="viv-rail-link" role="button" aria-pressed="false" title="Process code">
-        <span class="viv-rail-link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="viv-rail-link-svg">
-            <polyline points="16 18 22 12 16 6"/>
-            <polyline points="8 6 2 12 8 18"/>
-          </svg>
-        </span>
-        <span class="viv-rail-link-label">Code</span>
-      </a>
       <!-- The Branch page (#github) is no longer a rail item — it's reached by
            clicking the workspace source display at the top of the rail (see
-           #viv-workspace-switcher). Hash route #github kept for back-compat. -->
+           #viv-workspace-switcher). Hash route #github kept for back-compat.
+           Studies / Chat / Code moved to the dockable-panels group below. -->
     </nav>
 
     <!-- Studies of the active investigation, dependency-ordered. -->
@@ -1134,29 +1074,87 @@ a.viv-bs-commit:hover { text-decoration: underline; }
 
     </div><!-- /.viv-rail-scroll -->
 
-    <!-- Light / dark theme toggle (pinned to the rail bottom, always visible). -->
-    <div class="viv-rail-footer viv-rail-theme-footer">
-      <button class="viv-theme-toggle" id="viv-theme-toggle" type="button" role="switch" aria-checked="false"
-              title="Toggle dark / light mode" aria-label="Toggle dark mode" onclick="_toggleTheme()">
-        <span class="viv-theme-ico viv-theme-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
-        <span class="viv-theme-ico viv-theme-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></span>
-        <span class="viv-theme-thumb" aria-hidden="true"></span>
-      </button>
+    <!-- Dockable panels (pinned to the rail bottom): Studies / Chat / Code open as
+         INSET WINDOWS you can dock (left / right / top / bottom) and resize — a
+         different kind of control from the page-nav tabs above, so they're grouped
+         together and set apart in their own bordered well. These are NOT .menu-links
+         (page switches leave their open state alone); JS binds them by id, so they
+         behave the same here as when they lived in the primary nav. -->
+    <nav class="viv-rail-dock-group" role="group" aria-label="Dockable panels">
+      <a href="#" id="viv-studies-toggle" class="viv-rail-link" role="button" aria-pressed="false" title="Studies browser">
+        <span class="viv-rail-link-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="viv-rail-link-svg">
+            <circle cx="4.5" cy="6"  r="1.2" fill="currentColor" stroke="none"/>
+            <path d="M9 6 H20"/>
+            <circle cx="4.5" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+            <path d="M9 12 H20"/>
+            <circle cx="4.5" cy="18" r="1.2" fill="currentColor" stroke="none"/>
+            <path d="M9 18 H20"/>
+          </svg>
+        </span>
+        <span class="viv-rail-link-label">Studies</span>
+      </a>
+      <a href="#" id="viv-registry-toggle" class="viv-rail-link" role="button" aria-pressed="false" title="Registry browser — composites, processes, analyses &amp; visualizations">
+        <span class="viv-rail-link-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="viv-rail-link-svg">
+            <rect x="3.5" y="3.5" width="7" height="7" rx="1.4"/>
+            <rect x="13.5" y="3.5" width="7" height="7" rx="1.4"/>
+            <rect x="3.5" y="13.5" width="7" height="7" rx="1.4"/>
+            <rect x="13.5" y="13.5" width="7" height="7" rx="1.4"/>
+          </svg>
+        </span>
+        <span class="viv-rail-link-label">Registry</span>
+      </a>
+      <a href="#" id="viv-ai-toggle" class="viv-rail-link" role="button" aria-pressed="false" title="Chat">
+        <span class="viv-rail-link-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="viv-rail-link-svg">
+            <rect x="5" y="8" width="14" height="10" rx="2.5"/>
+            <path d="M12 4.5 V8"/>
+            <circle cx="12" cy="3.6" r="0.9"/>
+            <circle cx="9.5" cy="13" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="14.5" cy="13" r="1" fill="currentColor" stroke="none"/>
+            <path d="M3 12 V15 M21 12 V15"/>
+          </svg>
+        </span>
+        <span class="viv-rail-link-label">Chat</span>
+      </a>
+      <a href="#" id="viv-code-toggle" class="viv-rail-link" role="button" aria-pressed="false" title="Process code">
+        <span class="viv-rail-link-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="viv-rail-link-svg">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+        </span>
+        <span class="viv-rail-link-label">Code</span>
+      </a>
+      <!-- Light / dark theme toggle lives in the grouped well too (not tucked at
+           the very bottom). A hairline divider separates this app control from
+           the three dockable-panel launchers above it. -->
+      <div class="viv-rail-dock-sep" aria-hidden="true"></div>
+      <div class="viv-rail-theme-footer">
+        <button class="viv-theme-toggle" id="viv-theme-toggle" type="button" role="switch" aria-checked="false"
+                title="Toggle dark / light mode" aria-label="Toggle dark mode" onclick="_toggleTheme()">
+          <span class="viv-theme-ico viv-theme-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
+          <span class="viv-theme-ico viv-theme-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></span>
+          <span class="viv-theme-thumb" aria-hidden="true"></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Footer (pinned): About Vivarium. Replaces the brand-logo link that used
+         to open the About page. -->
+    <div class="viv-rail-footer viv-rail-bottom-footer">
+      <a href="#about" id="viv-rail-about" class="viv-rail-link menu-link" data-page="about" title="About Vivarium Workbench">
+        <span class="viv-rail-link-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="viv-rail-link-svg">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 11 V16.5"/>
+            <circle cx="12" cy="7.6" r="0.95" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <span class="viv-rail-link-label">About</span>
+      </a>
     </div>
-
-    <!-- The rail user-identity footer was removed: it added no navigation and
-         (in snapshot/screenshot contexts) surfaced a personal GitHub identity.
-         Dropping it also lets the Studies section grow to the rail's full
-         height so long study lists scroll instead of clipping. -->
-
-    <!-- Drag handle: resize the rail wider to see full study names/details.
-         Snaps to the normal width; dragging narrower snaps into the collapsed
-         bar. Double-click resets to normal. -->
-    <div class="viv-rail-resize-handle" id="viv-rail-resize-handle"
-         role="separator" aria-orientation="vertical" aria-label="Resize sidebar"
-         title="Drag to resize · double-click to reset"
-         onpointerdown="_vivRailResizeStart(event)"
-         ondblclick="_vivRailResizeReset()"></div>
 
   </aside>
 
@@ -1218,27 +1216,42 @@ a.viv-bs-commit:hover { text-decoration: underline; }
       </section>
 
       <section class="about-block">
-        <h2>How to use it</h2>
+        <h2>Finding your way around</h2>
+        <p>The left rail is a compact icon bar — hover any icon to see its name. It has three parts:</p>
         <ul class="about-steps">
-          <li><strong>Resources</strong> — the datasets, references, and expert notes your work draws on,
-            plus the curated structured scientific resources a workspace ships.</li>
-          <li><strong>Catalog / Processes</strong> — browse every Composite and Process. Open a card to
-            <em>Configure</em> its parameters, choose <em>Observables</em> and an emitter, <em>Explore</em> its
-            bigraph, and <em>Run</em> it — the run's progress and figures appear under <em>Outputs</em>.</li>
-          <li><strong>Studies</strong> — organize runs into investigations that pose a question and gate on an
-            expected result.</li>
-          <li><strong>Runs</strong> — every simulation you've launched, with its results and artifacts.</li>
-          <li><strong>Explore</strong> — deeper interactive analysis &amp; visualization modules matched to what your runs produced.</li>
+          <li><strong>Workspace badge</strong> (top) — the avatar for the workspace you're in; click it to
+            switch workspaces or open its <em>Source</em> (repository · branch · commit).</li>
+          <li><strong>Pages</strong> — <strong>Investigations</strong> (the default view),
+            <strong>Resources</strong> (datasets, references, and expert notes, plus the curated scientific
+            resources a workspace ships), <strong>Catalog</strong> and <strong>Registry</strong> (the
+            Composites and Processes you can configure, explore, and run), <strong>Runs</strong> (every
+            simulation you've launched, with its results and artifacts), and <strong>Explore</strong>
+            (interactive analysis &amp; visualization matched to what your runs produced).</li>
+          <li><strong>Panels</strong> (grouped at the bottom) — <strong>Studies</strong>,
+            <strong>Chat</strong>, and <strong>Code</strong> open as inset windows you can dock to any edge
+            and resize, so a study list, the AI assistant, or a process's source can sit beside your work.</li>
         </ul>
-        <p class="about-fineprint">Tip: start on <strong>Catalog → Composites</strong>, open
-          <code>ecoli_baseline</code> (or any composite), set <strong>Steps</strong>, and hit <strong>▶ Run</strong>.</p>
+        <p class="about-fineprint">Tip: open <strong>Catalog → Composites</strong>, pick a composite (e.g.
+          <code>ecoli_baseline</code>), set <strong>Steps</strong>, and hit <strong>▶ Run</strong> — progress
+          and figures appear under <em>Outputs</em>. Press <kbd>⌘K</kbd> to search everything.</p>
+      </section>
+
+      <section class="about-block">
+        <h2>Learn more</h2>
+        <p>New to Vivarium, or want the full walkthrough? The <strong>user's guide</strong> covers getting
+          started, building and composing models, running studies, and working with the AI agents — with a
+          reference for the skills, HTTP API, and schemas.</p>
       </section>
 
       <footer class="about-links">
-        <a class="about-link-btn" href="https://vivariumlab.com" target="_blank" rel="noopener">
+        <a class="about-link-btn" href="https://vivarium-collective.github.io/viva-docs/" target="_blank" rel="noopener">
+          User's guide ↗</a>
+        <a class="about-link-btn about-link-ghost" href="https://vivariumlab.com" target="_blank" rel="noopener">
           Vivarium Lab website ↗</a>
         <a class="about-link-btn about-link-ghost" href="https://github.com/vivarium-collective" target="_blank" rel="noopener">
           GitHub: vivarium-collective ↗</a>
+        <a class="about-link-btn about-link-ghost" href="https://github.com/vivarium-collective/process-bigraph" target="_blank" rel="noopener">
+          process-bigraph ↗</a>
       </footer>
 
     </div>
@@ -1365,8 +1378,20 @@ a.viv-bs-commit:hover { text-decoration: underline; }
 </section>
 
 <!-- ===== PAGE: MODULES (registry entries — processes / steps / emitters / …) ===== -->
-<section id="page-modules" class="page" data-page="modules">
+<section id="page-modules" class="page registry-focus" data-page="modules">
   <div class="page-fill">
+
+    <!-- Focus host: in `registry-focus` mode (default) the Registry view shows a
+         SINGLE full card for the item selected in the Processes panel. The classic
+         all-in-one list browser below is hidden in this mode and revealed via
+         "browse the full list". _showRegistryCard() renders the card into here. -->
+    <div id="registry-focus-host" class="registry-focus-host">
+      <div class="registry-focus-empty muted">
+        <div class="registry-focus-empty-title">Pick a composite or process</div>
+        <p>Open the <strong>Registry</strong> panel in the left rail and click any item to see its full card here.</p>
+        <button type="button" class="btn-link registry-browse-all" onclick="_registryBrowseAll&amp;&amp;_registryBrowseAll()">Or browse the full registry list &#9656;</button>
+      </div>
+    </div>
 
     <div id="registry-status" class="muted" style="margin:0"></div>
 
@@ -1394,9 +1419,6 @@ a.viv-bs-commit:hover { text-decoration: underline; }
           </button>
           <button class="reg-zoom-btn active" data-zoom="grid" onclick="_setRegistryZoom('grid')" title="Cards — grid with usage; adjust columns at left" aria-label="Cards view">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="3.5" width="7" height="7" rx="1.4"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.4"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.4"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.4"/></svg>
-          </button>
-          <button class="reg-zoom-btn" data-zoom="full" onclick="_setRegistryZoom('full')" title="Full — the whole card (config, ports, run)" aria-label="Full card view">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="17" y2="13"/><line x1="7" y1="16.5" x2="13" y2="16.5"/></svg>
           </button>
         </div>
       </div>
@@ -1503,7 +1525,7 @@ a.viv-bs-commit:hover { text-decoration: underline; }
     <div class="inv-header-bar" style="display:flex;align-items:center;flex-wrap:wrap;gap:5px 7px;margin:0 0 10px">
       
       <span id="ws-title-wrap" style="display:flex;flex-direction:column;justify-content:center;min-width:0;flex:1 1 auto;line-height:1.15">
-        <span id="ws-title-kicker" style="font-size:0.68em;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:#94a3b8">Investigation</span>
+        
         <strong id="ws-title" style="font-size:1.35em;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></strong>
       </span>
       <span id="ws-status"></span>
@@ -1511,10 +1533,13 @@ a.viv-bs-commit:hover { text-decoration: underline; }
       
       <span class="inv-header-nav" style="display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px;margin-left:auto">
         <button id="ws-back" class="btn-mini" onclick="_showExplore()"
-                title="All investigations" aria-label="All investigations">←</button>
+                title="Back to all investigations" aria-label="All investigations"><span aria-hidden="true">←</span> Back</button>
         <button type="button" id="inv-overview-toggle" class="btn-mini" aria-expanded="false"
-                title="Overview" aria-label="Toggle overview"
-                onclick="window._toggleInvOverview()">▸</button>
+                title="Show overview" aria-label="Toggle overview"
+                onclick="window._toggleInvOverview()"><span class="inv-ov-caret" aria-hidden="true">▸</span> Overview</button>
+        <button type="button" id="inv-graph-toggle" class="btn-mini" aria-expanded="true"
+                title="Hide investigation graph" aria-label="Toggle investigation graph"
+                onclick="window._aigToggleInline()"><span class="inv-graph-caret" aria-hidden="true">▾</span> Graph</button>
         <span id="ws-actions"></span>
       </span>
     </div>
@@ -1732,15 +1757,7 @@ a.viv-bs-commit:hover { text-decoration: underline; }
           <button type="button" role="menuitem" onclick="window._aigDownloadMenuPick('pdf')" style="display:block;width:100%;text-align:left;border:none;border-top:1px solid #f1f5f9;background:transparent;padding:7px 12px;cursor:pointer;font-size:0.95em;color:#334155">↓ PDF</button>
         </div>
       </span>
-      <!-- Dock control: choose a side (left/right/bottom/top), pop out, or go back
-           inline. Placed after the Display/Legend/Export trio so those three stay
-           grouped together. -->
-      <span class="aig-tb-group" role="group" aria-label="Graph panel" title="Dock">
-        <button id="aig-dock-panel-btn" type="button" class="aig-tb-btn"
-                title="Dock the investigation graph — choose a side, pop out, or go back inline"
-                aria-haspopup="menu" aria-label="Dock the investigation graph"
-                onclick="window.GraphPanel&&GraphPanel.dockMenu(this)">◧</button>
-      </span>
+      
       
       <span class="aig-tb-hint" aria-hidden="true" title="Single-click a study to select it; double-click to open it">click: select · double-click: open</span>
     </div>
@@ -2449,6 +2466,33 @@ a.viv-bs-commit:hover { text-decoration: underline; }
     </div>
   </aside>
 
+  <!-- Processes panel: the dockable registry BROWSER (composites, processes,
+       analyses, visualizations, emitters, tests, types). Clicking a row focuses
+       that item as a full card in the Registry view. Built on VivPanelDock, same
+       shape as the Studies panel. -->
+  <aside id="viv-registry-panel" class="viv-registry-panel" aria-label="Registry" hidden>
+    <div class="viv-registry-panel-inner">
+      <div class="viv-registry-resize-handle" id="viv-registry-resize-handle"
+           role="separator" aria-orientation="vertical" aria-label="Resize processes panel"
+           title="Drag to resize"></div>
+      <div class="viv-registry-head vp-head" title="Drag to dock left / right / bottom / top">
+        <span class="vp-spacer"></span>
+        <button class="vp-icon" type="button" data-act="dock" title="Move or pop out panel" aria-label="Move or pop out panel"
+                onclick="window.RegistryPanel&&RegistryPanel.dockMenu(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>
+        </button>
+        <button class="vp-icon" type="button" title="Close" aria-label="Close processes panel"
+                onclick="window.RegistryPanel&&RegistryPanel.toggle()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <button type="button" class="viv-registry-expand" title="Expand the registry panel"
+              aria-label="Expand the registry panel"
+              onclick="window.RegistryPanel&&RegistryPanel.expand()">⟩</button>
+      <div class="viv-registry-body" id="viv-registry-body"></div>
+    </div>
+  </aside>
+
 </div> <!-- /.viv-layout -->
 
 <!-- ============================================================ -->
@@ -2774,7 +2818,7 @@ Nothing on <code id="pr-base-display-2">main</code> changes until someone presse
      DataSource global that renderers call to fetch narrative data.
      local-server mode (default) fetches from the same-origin /api/* endpoints.
      Hosted mode (sub-projects #2/#3) will set a different config here. -->
-<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-simbio", basePath: "/viva-simbio/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-simbio/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-simbio", "repo_url": "https://github.com/vivarium-collective/viva-simbio", "commit": "ebecf1fb352e81d56f1446df689c0c1cca076d81", "commit_url": "https://github.com/vivarium-collective/viva-simbio/commit/ebecf1fb352e81d56f1446df689c0c1cca076d81", "branch": "main", "lockfile": "uv.lock@d5a5061990b0", "generated_at": "2026-10-23 05:46 UTC"} };</script>
+<script>window.__DASH_CONFIG__ = { mode: "snapshot", interactiveUrl: "https://github.com/vivarium-collective/viva-simbio", basePath: "/viva-simbio/workbench", inputsDownloadBase: "https://github.com/vivarium-collective/viva-simbio/raw/main", provenance: {"repo_slug": "vivarium-collective/viva-simbio", "repo_url": "https://github.com/vivarium-collective/viva-simbio", "commit": "ebecf1fb352e81d56f1446df689c0c1cca076d81", "commit_url": "https://github.com/vivarium-collective/viva-simbio/commit/ebecf1fb352e81d56f1446df689c0c1cca076d81", "branch": "main", "lockfile": "uv.lock@d5a5061990b0", "generated_at": "2026-10-27 12:37 UTC"} };</script>
 <!-- Derive the global URL prefix from the (possibly publish-injected) config.
      Many renderers prefix workspace-root-absolute links (/studies/, /api/)
      with window.__BASE_PATH__ so they resolve when the read-only bundle is
@@ -2813,6 +2857,7 @@ Nothing on <code id="pr-base-display-2">main</code> changes until someone presse
 <script src="/viva-simbio/workbench/assets/loom-embed.js" onerror="/* loom-embed unavailable */"></script>
 <script src="/viva-simbio/workbench/assets/checklist-select.js" onerror="/* checklist-select unavailable */"></script>
 <script src="/viva-simbio/workbench/assets/walkthrough.js" onerror="/* walkthrough unavailable */"></script>
+<script src="/viva-simbio/workbench/assets/argument-graph.js" onerror="/* argument graph view unavailable */"></script>
 <!-- graph-panel.js: the dockable investigation-graph panel (VivPanelDock). Loads
      AFTER panel-dock.js (the engine) and walkthrough.js (the DAG renderer it hosts). -->
 <script src="/viva-simbio/workbench/assets/graph-panel.js" onerror="/* graph panel unavailable */"></script>
@@ -2820,7 +2865,14 @@ Nothing on <code id="pr-base-display-2">main</code> changes until someone presse
      AFTER panel-dock.js (the engine) and walkthrough.js (which renders the study
      tree it hosts). -->
 <script src="/viva-simbio/workbench/assets/studies-panel.js" onerror="/* studies panel unavailable */"></script>
+<!-- registry-panel.js: the dockable "Registry" browser panel (VivPanelDock). Loads
+     AFTER panel-dock.js (engine), composite-card.js + walkthrough.js (the card
+     renderers + _showRegistryCard it drives), and data-source.js. -->
+<script src="/viva-simbio/workbench/assets/registry-panel.js" onerror="/* registry panel unavailable */"></script>
 <script src="/viva-simbio/workbench/assets/mobile-nav.js" onerror="/* mobile-nav unavailable */"></script>
+<!-- mobile-panels.js: phone-only bottom bar that launches + switches the dockable
+     panels (Studies/Chat/Code/Graph). Loads AFTER the panels it drives. -->
+<script src="/viva-simbio/workbench/assets/mobile-panels.js" onerror="/* mobile panel switcher unavailable */"></script>
 <script src="/viva-simbio/workbench/assets/search-palette.js" onerror="/* global search unavailable */"></script>
 <script src="/viva-simbio/workbench/assets/github-login.js" onerror="/* github-login unavailable */"></script>
 <!-- chat-core.js already loaded above (shared by panel-dock.js + process-code.js). -->
